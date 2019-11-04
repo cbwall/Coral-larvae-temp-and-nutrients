@@ -1,0 +1,936 @@
+---
+title: "Temperature and nutrient effects on the larvae of three Hawaiian corals"
+author: "Chris B Wall, with RM Kitchen, M Piscetta, M Rocha de Souza, EA Lenz, D Schar, RD Gates"
+date: "11/3/2019"
+output:
+  html_document:
+    code_folding: hide
+    toc: yes
+    toc_depth: 4
+    toc_float: yes
+---
+
+```{r global options, include=FALSE}
+knitr::opts_chunk$set(warning=FALSE, message=FALSE, cache=FALSE, fig.align='center')
+
+# load packages
+if (!require("pacman")) install.packages("pacman"); library(pacman) # for rapid install if not in library
+pacman::p_load("tidyverse", "plotrix","ggfortify", "gridExtra", "polspline", "rms", "cowplot", 
+               "broom", "survival","emmeans", "survminer", "plyr", "dplyr","devtools", "ggpubr", "FSA", 
+               "rcompanion", "car", "DescTools")
+library(rcompanion) #has dependencies with DescTools that can lead to loading issues
+
+# note that dplyr and plyr have conflicts, load and unlaod with dplyr LAST if issues in code exist
+
+```
+
+## Synposis  
+Corals are threatened by rising ocean temperatures and increased nutrient loading in coastal areas. The threats posed by elevated temperatures and nutrients for coral larvae -- the early stages of the coral lifecycle -- however are less certain, and the biology of corals in larval stages can differ considerably. For instance, some species brood larvae with symbionts inherited from parents, others broadcast spawn egg-sperm bundles that receive endosymbionts from parents, while other egg-sperm bundles are aposymbontic and endosymbionts are obtaiend from the water column (i.e. horizontal transmittion).  
+  
+The goal of this project was to understand how different temperature and nutrient concentrations affect the larvae of three Hawaiian reef coral taxa: *Lobactis scutaria* (broadcast spawner, aposymbiotic larvae), *Pocillopora acuta* (brooder, symbiotic larvae), and *Montipora capitata* (broadcast spawner, symbiotic larvae).  Temperature treatments oscillated with natural diel cycles at means of ca. 27°C and 29°C (*ambient and elevated temperatures*). Nutrient concentrations were elevated nitrate (5 μM NO~3~^-^), elevated phosphate (1μM PO~4~^3-^) and a combined elevated nitrate and phosphate treatment (+N+P). We evaluated effects of treatments after 4 or 5 days of exposure by assessing *(1) larval survivorship, (2) dark despiration rates, (3) symbiont cell densities, and (4) change in larval size.*  
+  
+  
+## Temperauture treatments  
+Temperatures were variable according to natural cycles with *elevated temperature* (~29°C) at 1-2°C offset above ambient (~ 27°C).  
+```{r temperature, results='hide'}
+#Upload temperature data
+temperature.data=read.csv("Data/temp data.csv")
+
+#str(temperature.data)
+
+#Subset by species
+lobactis.temp=subset(temperature.data, Species=="Lobactis scutaria")
+montipora.temp=subset(temperature.data, Species=="Montipora capitata")
+pocillopora.temp=subset(temperature.data, Species=="Pocillopora acuta")
+summary(lobactis.temp$Control_Temperature) #max=28.78, min=26.56, mean=27.37
+summary(lobactis.temp$High_Temperature) #max=31.00, min=27.63, mean=29.17
+summary(montipora.temp$Control_Temperature) #max=28.09, min=25.54, mean=26.97
+summary(montipora.temp$High_Temperature) #max=31.84, min=27.46, mean=29.11
+summary(pocillopora.temp$Control_Temperature) #max=28.25, min=26.43, mean=27.17
+summary(pocillopora.temp$High_Temperature) #max=30.87,min=27.38, mean=28.72
+
+############################
+#plot the data for lobactis
+l.long_temp<-lobactis.temp%>%
+  select(Day,Control_Temperature,High_Temperature)%>%
+  gather(Treatment,"temperature",-Day)
+
+l.temp=ggplot(l.long_temp)+
+  aes(Day,temperature,color=Treatment)+
+  theme_classic(base_size=10)+
+  labs(x="",y="")+
+  theme(axis.title = element_text(size = 10, face="bold"))+
+  theme(legend.position="none")+
+  geom_hline(yintercept = 27.37, linetype="dashed", color="darkblue", size=0.6) +
+  geom_hline(yintercept = 29.17, linetype="dashed", color="darkred", size=0.6) +
+  ggtitle("L. scutaria") +
+  theme(plot.title= element_text(face="italic"))+
+  guides(col=guide_legend(ncol=2))+
+  scale_x_continuous(breaks=seq(0,4,1),limits=c(0,5))+
+  geom_line(aes(linetype=Treatment),size = 0.6)+
+  scale_colour_manual(name="Treatment",values=c("cornflowerblue","coral"), 
+                      labels=c("Ambient","High"))+
+  scale_linetype_manual(values=c("solid", "solid"),
+                        labels=c("Ambient","High"))+
+  scale_y_continuous(limits=c(25,33))
+
+############################
+#plot the data for montipora
+m.long_temp<-montipora.temp%>%
+  select(Day,Control_Temperature,High_Temperature)%>%
+  gather(Treatment,"temperature",-Day)
+
+############################
+# plot for pocillopora
+p.long_temp<-pocillopora.temp %>%
+  select(Day,Control_Temperature,High_Temperature)%>%
+  gather(Treatment,"temperature",-Day)
+
+p.temp=ggplot(p.long_temp)+
+  aes(Day,temperature,color=Treatment)+
+  theme_classic()+
+  labs(x="", y="Temperature (°C)")+
+  theme(axis.title = element_text(size = 8, face="bold"))+
+  theme(legend.position="none")+
+  geom_hline(yintercept = 27.17, linetype="dashed", color="darkblue", size=0.6) +
+  geom_hline(yintercept = 28.72, linetype="dashed", color="darkred", size=0.6) +
+ ggtitle("P. acuta") +
+  theme(plot.title= element_text(face="italic"))+
+  guides(col=guide_legend(ncol=2))+
+  scale_x_continuous(breaks=seq(0,5,1),limits=c(0,5))+
+  geom_line(aes(linetype=Treatment),size = 0.6)+
+  scale_colour_manual(name="Treatment",values=c("cornflowerblue","coral"), 
+                      labels=c("Ambient","High"))+
+  scale_linetype_manual(values=c("solid", "solid"),
+                        labels=c("Ambient","High"))+
+  scale_y_continuous(limits=c(25,33))
+
+ 
+m.temp<- ggplot(m.long_temp)+
+  aes(Day,temperature,color=Treatment)+
+  theme_classic(base_size=10)+
+  labs(x="Day",y="")+
+  theme(axis.title = element_text(size = 10, face="bold"))+
+  theme(legend.position="none")+
+  geom_hline(yintercept = 26.97, linetype="dashed", color="darkblue", size=0.6) +
+  geom_hline(yintercept = 29.11, linetype="dashed", color="darkred", size=0.6) +
+  ggtitle("M. capitata") +
+  theme(plot.title= element_text(face="italic"))+
+  guides(col=guide_legend(ncol=2))+
+  scale_x_continuous(breaks=seq(0,5,1),limits=c(0,5))+
+  geom_line(aes(linetype=Treatment),size = 0.6)+
+  scale_colour_manual(name="Treatment",values=c("cornflowerblue","coral"), 
+                      labels=c("Ambient","High"))+
+  scale_linetype_manual(values=c("solid", "solid"),
+                        labels=c("Ambient","High"))+
+  scale_y_continuous(limits=c(25,33))
+
+
+c.temp.col=plot_grid(l.temp, p.temp, m.temp, labels=c("a","b","c"), nrow=3, align = "v", label_size = 10)
+temp.legend=get_legend(l.temp+theme(legend.position = "top") +
+                         theme(legend.title = element_text(size=10, face="bold")) +
+                         theme(legend.text = element_text(size = 10, face="plain")))
+```
+
+```{r temp plots, fig.height=5, fig.width=4, results='hide'}
+##combined species panelled figure
+plot_grid(temp.legend, c.temp.col, ncol=1, rel_heights = c(.2, 4))
+dev.copy(pdf, "figures/combined.temp.pdf", width = 6, height = 8)
+dev.off()
+```
+
+## Biological Responses    
+  
+We measured larvae survivorship, dark respiration, symbiont densities, and change in size over the 4 or 5 day exposure to temperature-nutrient treatments.  
+  
+### Survivorship  
+First the figure, then the complete stats, then final models.
+```{r survivorship figure, results='hide'}
+detach("package:plyr", unload = TRUE) # do this here if get error, plyr and dplyr conflict
+
+########################## Combined Daily Survivorship Figure ###################################
+
+### upload data
+# rename the N+P treatment
+# set levels for treatment
+daily.surv=read.csv("data/larval survivorship.csv")
+levels(daily.surv$Nutrient.Treatment)[levels(daily.surv$Nutrient.Treatment)==
+                                        "Nitrate and Phosphate"] <- "N+P"
+daily.surv$Nutrient.Treatment=factor(daily.surv$Nutrient.Treatment, 
+                                       levels=c("Control", "Nitrate", "Phosphate", "N+P"))
+
+# Lobactis
+l.daily.surv=subset(subset(daily.surv, Species=="Lobactis scutaria"), Month=="2")
+
+# Montipora
+m.daily.surv=subset(subset(daily.surv, Species=="Montipora capitata"), Month=="2")
+
+# Pocillopora
+p.daily.surv=subset(subset(daily.surv, Species=="Pocillopora acuta"), Month=="2")
+
+
+## Figures
+#######################################
+#######################################
+
+l.long_surv = l.daily.surv%>%select(-Tube,-Species,-Month,-Final.Survivorship,-Treatment,-Day.5)%>%
+  gather(Time,"Survivorship", -Heat.Treatment, -Nutrient.Treatment)%>%
+  mutate(Percentage=Survivorship/40)%>%
+  group_by(Heat.Treatment,Nutrient.Treatment,Time)%>%
+  summarise(avg=mean(Percentage),sterr=std.error(Percentage))%>%
+  mutate(Duration=as.numeric(case_when(Time=="Day.0"~"0",
+                                       Time=="Day.1"~"24",
+                                       Time=="Day.2"~"48",
+                                       Time=="Day.3"~"72",
+                                       Time=="Day.4"~"96")))%>%
+  unite(Treatment,Heat.Treatment,Nutrient.Treatment,sep=" ", remove=FALSE)
+
+####### lobactis.plot
+l.long.surv=ggplot(l.long_surv)+ aes(Duration,avg,color=Nutrient.Treatment, linetype=Heat.Treatment)+
+  geom_point(size=1)+
+  geom_line(size=0.6)+
+  geom_errorbar(aes(ymin=avg-sterr, ymax=avg+sterr, width=0),position=position_dodge(1), lty=1)+
+  theme_classic(base_size=12)+
+  labs(x="",y="Survivorship")+
+  guides(col=guide_legend(ncol=2))+
+  scale_colour_manual(name="Nutrients", values=c("mediumseagreen","mediumorchid2","sky blue", "coral"))+
+  scale_x_continuous(breaks=seq(0,96,24),limits=c(0,96))+
+  scale_y_continuous(limits=c(0,1.05))+
+  ggtitle("L. scutaria") +
+  theme(plot.title= element_text(face="italic"),
+        legend.key.height=unit(0.5, "cm"),
+        text = element_text(size = 12), 
+        axis.text = element_text(size = 12, color="black"),
+        axis.title = element_text(size = 12, face="bold"),
+        legend.title = element_text(size = 12, face="bold"),
+        legend.text = element_text(size = 12, color="black"), 
+        legend.position="none")
+
+
+####
+p.long_surv = p.daily.surv%>%select(-Tube,-Species,-Month,-Final.Survivorship,-Treatment,-Day.5)%>%
+  gather(Time,"Survivorship", -Heat.Treatment, -Nutrient.Treatment)%>%
+  mutate(Percentage=Survivorship/20)%>%
+  group_by(Heat.Treatment,Nutrient.Treatment,Time)%>%
+  summarise(avg=mean(Percentage),sterr=std.error(Percentage))%>%
+  mutate(Duration=as.numeric(case_when(Time=="Day.0"~"0",
+                                       Time=="Day.1"~"24",
+                                       Time=="Day.2"~"48",
+                                       Time=="Day.3"~"72",
+                                       Time=="Day.4"~"96",
+                                       Time=="Day.5"~"120")))%>%
+  unite(Treatment,Heat.Treatment,Nutrient.Treatment,sep=" ", remove=FALSE)
+
+p.long.surv=ggplot(p.long_surv)+aes(Duration,avg,color=Nutrient.Treatment, linetype=Heat.Treatment)+
+  geom_point(size=1)+
+  geom_line(size=0.6) +
+  geom_errorbar(aes(ymin=avg-sterr, ymax=avg+sterr, width=0),position=position_dodge(1), lty=1)+
+  theme_classic(base_size=12)+
+  labs(x="Hours",y="")+
+  guides(col=guide_legend(ncol=2))+
+  scale_colour_manual(name="Nutrients", values=c("mediumseagreen","mediumorchid2","sky blue", "coral"))+
+  scale_x_continuous(breaks=seq(0,120,24),limits=c(0,120))+
+  scale_y_continuous(limits=c(0,1.05))+
+  theme(legend.key.height=unit(0.5, "cm"),
+        text = element_text(size = 12), 
+        axis.text = element_text(size = 12, color="black"),
+        axis.title = element_text(size = 12, face="bold"),
+        legend.title = element_text(size = 12, face="bold"),
+        legend.text = element_text(size = 12, color="black"), 
+        legend.position="none")+
+  ggtitle("P. acuta") +
+  theme(plot.title= element_text(face="italic"))
+
+####### montipora.plot
+m.long_surv = m.daily.surv%>%select(-Tube,-Species,-Month,-Final.Survivorship,-Treatment)%>%
+  gather(Time,"Survivorship", -Heat.Treatment, -Nutrient.Treatment)%>%
+  mutate(Percentage=Survivorship/40)%>%
+  group_by(Heat.Treatment,Nutrient.Treatment,Time)%>%
+  summarise(avg=mean(Percentage),sterr=std.error(Percentage))%>%
+  mutate(Duration=as.numeric(case_when(Time=="Day.0"~"0",
+                                       Time=="Day.1"~"24",
+                                       Time=="Day.2"~"48",
+                                       Time=="Day.3"~"72",
+                                       Time=="Day.4"~"96",
+                                       Time=="Day.5"~"120")))%>%
+  unite(Treatment,Heat.Treatment,Nutrient.Treatment,sep=" ", remove=FALSE)
+
+####
+m.long.surv=ggplot(m.long_surv)+aes(Duration,avg,color=Nutrient.Treatment, linetype=Heat.Treatment)+
+  geom_point(size=1)+
+  geom_line(size=0.6)+
+  geom_errorbar(aes(ymin=avg-sterr, ymax=avg+sterr, width=0),position=position_dodge(1), lty=1)+
+  theme_classic(base_size=12)+
+  labs(x="",y="")+
+  guides(col=guide_legend(ncol=2))+
+  scale_colour_manual(name="Nutrients", values=c("mediumseagreen","mediumorchid2","sky blue", "coral"))+
+  scale_x_continuous(breaks=seq(0,120,24),limits=c(0,120))+
+  scale_y_continuous(limits=c(0,1.05))+
+  theme(legend.key.height=unit(0.5, "cm"),
+        text = element_text(size = 12), 
+        axis.text = element_text(size = 12, color="black"),
+        axis.title = element_text(size = 12, face="bold"),
+        legend.title = element_text(size = 12, face="bold"),
+        legend.text = element_text(size = 12, color="black"), 
+        legend.position="none")+
+  ggtitle("M. capitata") +
+  theme(plot.title= element_text(face="italic"))
+
+
+######## Figure
+total.surv.row=plot_grid(l.long.surv, p.long.surv, m.long.surv,  labels=c("a","b","c"),ncol = 3, align = "h", label_size = 10)
+fin.surv.legend=get_legend(l.long.surv+theme(legend.position = "top"))
+fin.surv=plot_grid(fin.surv.legend, total.surv.row, ncol=1, rel_heights = c(.3,1))
+
+##Arrange figures with cowplot
+fin.surv
+dev.copy(pdf,"figures/combined.daily.survivorship.pdf", width = 8, height = 4)
+dev.off()
+```
+  
+The full model testing and assumptions of statistical tests (output not shown).
+```{r survivorship stats, results='hide', fig.show='hide', collapse = TRUE}
+
+#######################################
+#### Statistics
+#######################################
+l.format_surv<-l.daily.surv%>%select(-Month,-Final.Survivorship,-Treatment,-Day.5)%>%
+  gather(Time,"Survivorship",-Nutrient.Treatment,-Heat.Treatment,-Day.0,-Tube,-Species)%>%
+  mutate(Lost=Day.0-Survivorship)%>%
+  group_by(Species,Heat.Treatment,Nutrient.Treatment,Time,Tube)%>%
+  summarise(surv=sum(Survivorship),lost=sum(Lost))%>%
+  mutate(Duration=as.numeric(case_when(Time=="Day.0"~"0",
+                                       Time=="Day.1"~"24",
+                                       Time=="Day.2"~"48",
+                                       Time=="Day.3"~"72",
+                                       Time=="Day.4"~"96")))%>%
+  unite(Treatment,Heat.Treatment,Nutrient.Treatment,sep="_",remove = FALSE)
+
+m.format_surv<-m.daily.surv%>%select(-Month,-Final.Survivorship,-Treatment)%>%
+  gather(Time,"Survivorship",-Nutrient.Treatment,-Heat.Treatment,-Day.0,-Tube,-Species)%>%
+  mutate(Lost=Day.0-Survivorship)%>%
+  group_by(Species,Heat.Treatment,Nutrient.Treatment,Time,Tube)%>%
+  summarise(surv=sum(Survivorship),lost=sum(Lost))%>%
+  mutate(Duration=as.numeric(case_when(Time=="Day.0"~"0",
+                                       Time=="Day.1"~"24",
+                                       Time=="Day.2"~"48",
+                                       Time=="Day.3"~"72",
+                                       Time=="Day.4"~"96",
+                                       Time=="Day.5"~"120")))%>%
+  unite(Treatment,Heat.Treatment,Nutrient.Treatment,sep="_",remove = FALSE)
+
+p.format_surv<-p.daily.surv%>%select(-Month,-Final.Survivorship,-Treatment)%>%
+  gather(Time,"Survivorship",-Nutrient.Treatment,-Heat.Treatment,-Day.0,-Tube,-Species)%>%
+  mutate(Lost=Day.0-Survivorship)%>%
+  group_by(Species,Heat.Treatment,Nutrient.Treatment,Time,Tube)%>%
+  summarise(surv=sum(Survivorship),lost=sum(Lost))%>%
+  mutate(Duration=as.numeric(case_when(Time=="Day.0"~"0",
+                                       Time=="Day.1"~"24",
+                                       Time=="Day.2"~"48",
+                                       Time=="Day.3"~"72",
+                                       Time=="Day.4"~"96",
+                                       Time=="Day.5"~"120")))%>%
+  unite(Treatment,Heat.Treatment,Nutrient.Treatment,sep="_",remove = FALSE)
+
+unfold<-function(x,lost_colname,surv_colname){
+  lost_expanded<-x[rep(row.names(x), x[[lost_colname]]), 1:ncol(x)]
+  lost_final<-lost_expanded%>%mutate(outcome=1)
+  surv_expanded<-x[rep(row.names(x), x[[surv_colname]]), 1:ncol(x)]
+  surv_final<-surv_expanded %>% mutate(outcome=0)
+  rbind(lost_final,surv_final)}
+
+l.cox_data<-unfold(l.format_surv,"lost","surv")
+m.cox_data<-unfold(m.format_surv, "lost","surv")
+p.cox_data<-unfold(p.format_surv, "lost","surv")
+
+c.cox_data=rbind(l.cox_data, m.cox_data, p.cox_data)
+
+#######################################
+# surviorship dataframes l.cox_data, m.cox_data, p.cox_data
+#######################################
+#######################################
+
+
+# Lobactis models
+#####
+l.surv.data<-l.cox_data
+l.surv.data<-as.data.frame(l.surv.data) # make dataframe
+
+l.cox_model<-coxph(Surv(Duration,outcome)~Heat.Treatment*Nutrient.Treatment+(1|Tube), data=l.surv.data)
+l.cox_model1<-coxph(Surv(Duration,outcome)~Heat.Treatment*Nutrient.Treatment, data=l.surv.data)
+
+anova(l.cox_model, l.cox_model1) #not different
+
+#testing Cox hazards assumptions via scaled Schoenfeld residuals 
+test.ph.f <- cox.zph(l.cox_model1); test.ph.f
+ggcoxzph(test.ph.f)
+
+#Martingale residuals testing for influential observations
+ggcoxdiagnostics(l.cox_model1, type = "dfbeta",
+                 linear.predictions = FALSE, ggtheme = theme_bw())
+
+
+### ANOVA
+anova(l.cox_model1) # effects of nutrients, effects of Nut:Treat
+
+### Post hocs
+
+# test for nutrient effects
+pairwise_survdiff(Surv(Duration,outcome)~Nutrient.Treatment, data=l.surv.data) #Treatment here is the orthogonal interaction
+# - Control different from all others, Nitrate differs from control, from phosphate, and from N+P
+
+# test for nut:heat effects
+pairwise_survdiff(Surv(Duration,outcome)~Treatment, data=l.surv.data) #Treatment here is the orthogonal interaction
+
+#- driven by changes in two treatments
+# - N:Ambient --- differ from Cont:Amb, Cont:Heat, N+P:Heat, P:Amb
+# - N+P:Heat --- differ from N+P:Amb, N:Amb, N:Heat, P:Heat
+
+# test plot with global p value
+ggsurvplot(survfit(Surv(Duration,outcome)~Nutrient.Treatment, data=l.surv.data), pval=TRUE) # showing global p value
+
+# test plot with global p value
+ggsurvplot(survfit(Surv(Duration,outcome)~Treatment, data=l.surv.data), pval=TRUE) # showing global p value
+
+
+#######################################
+#######################################
+# Pocillopora models
+####
+
+p.surv.data<-p.cox_data
+p.surv.data<-as.data.frame(p.surv.data) # make dataframe
+
+p.cox_model<-coxph(Surv(Duration,outcome)~Heat.Treatment*Nutrient.Treatment+(1|Tube), data=p.surv.data)
+p.cox_model1<-coxph(Surv(Duration,outcome)~Heat.Treatment*Nutrient.Treatment, data=p.surv.data)
+
+anova(p.cox_model, p.cox_model1) #not different
+
+#testing Cox hazards assumptions via scaled Schoenfeld residuals 
+test.ph.p <- cox.zph(p.cox_model1); test.ph.p
+ggcoxzph(test.ph.p)
+
+#Martingale residuals testing for influential observations
+ggcoxdiagnostics(p.cox_model1, type = "dfbeta",
+                 linear.predictions = FALSE, ggtheme = theme_bw())
+
+### ANOVA
+anova(p.cox_model1) # effects of heat, effects of nutrients, no interaction
+
+### Post hocs
+
+# test for nutrient effects
+pairwise_survdiff(Surv(Duration,outcome)~Nutrient.Treatment, data=p.surv.data) #Treatment here is the orthogonal interaction
+# - Nitrate differs  from phosphate, and from N+P (almost from control but not quite)
+
+# test for heat effects
+pairwise_survdiff(Surv(Duration,outcome)~Heat.Treatment, data=p.surv.data)
+
+#- effects very small
+# -Nutrients --- Nitrate starts to harm survivorship at end
+# -Heat --- slightly lover (but not really) in ambient
+
+# test plot with global p value for nutrients
+poc.nut<-ggsurvplot(survfit(Surv(Duration,outcome)~Nutrient.Treatment, data=p.surv.data), pval=TRUE);poc.nut # showing global p value
+
+# test plot with global p value for temp
+poc.temp<-ggsurvplot(survfit(Surv(Duration,outcome)~Heat.Treatment, data=p.surv.data), pval=TRUE);poc.temp # showing global p value
+
+
+#######################################
+####################################### 
+# Montipora models
+#### 
+
+m.surv.data<-m.cox_data
+m.surv.data<-as.data.frame(m.surv.data) # make dataframe
+
+m.cox_model<-coxph(Surv(Duration,outcome)~Heat.Treatment*Nutrient.Treatment+(1|Tube), data=m.surv.data)
+m.cox_model1<-coxph(Surv(Duration,outcome)~Heat.Treatment*Nutrient.Treatment, data=m.surv.data)
+
+anova(m.cox_model, m.cox_model1) #not different
+
+#testing Cox hazards assumptions via scaled Schoenfeld residuals 
+test.ph.m <- cox.zph(m.cox_model1); test.ph.m
+#ggcoxzph(test.ph.m)
+
+#Martingale residuals testing for influential observations
+ggcoxdiagnostics(m.cox_model1, type = "dfbeta",
+                 linear.predictions = FALSE, ggtheme = theme_bw())
+
+### ANOVA
+anova(m.cox_model1) # effects of nutrients, effects of temp, and interaction
+
+### Post hocs
+
+# test for orthogonal effects
+pairwise_survdiff(Surv(Duration,outcome)~Treatment, data=m.surv.data) #Treatment here is the orthogonal interaction
+
+# - relative to control:Amb,  heat increased survivorship
+# - lowest survivorship in nitrate+amb (different from all other treatments, but only slightly more than control)
+# - highest survivorship in control+heat
+# - survivorship > ambient:control in Control:heat, NP:amb, P:heat 
+# - survivorship < ambient:heat in all treatments
+
+#some plots
+# test for heat effects
+pairwise_survdiff(Surv(Duration,outcome)~Heat.Treatment, data=m.surv.data)
+# - Temp: survivorship not harmed by higher temp (actually highe in warmer water)
+
+# test for nutrient effects
+pairwise_survdiff(Surv(Duration,outcome)~Nutrient.Treatment, data=m.surv.data)
+# - Nutrients: Nitrate differ than control, phosphate, N+P. ALSO, P different from control
+
+# test plot with global p value for combined temp
+ggsurvplot(survfit(Surv(Duration,outcome)~Treatment, data=m.surv.data), pval=TRUE) # showing global p value
+
+```
+  
+**The final models for survivorship results for *L. scutaria*, *P. acuta*, and *M. capitata*.**
+```{r survivorship models}
+anova(l.cox_model1)
+anova(p.cox_model1)
+anova(m.cox_model1)
+```
+  
+### Respiration  
+  
+Data for for *P. acuta* and *M. capitata*. Note that *L. scutaria* is not present here since larvae had very low respiration rates and low signal : noise ratio.  First the figure, then the complete stats, then final models.
+```{r respiration figure, fig.show='hold', fig.height=4, fig.width=7, results='hide'}
+###################################### Combined Respiration Measurements ###########################################
+#####################################################################################################################
+
+resp.slopes=read.csv("Data/respiration slopes.csv")
+resp.slopes$Nutrient.Treatment=factor(resp.slopes$Nutrient.Treatment, 
+                                      levels=c("Control", "Nitrate", "Phosphate", "N+P"))
+
+p.resp=subset(resp.slopes, Species=="Pocillopora acuta")
+m.resp=subset(resp.slopes, Species=="Montipora capitata")
+
+library("plyr") # reload plyr
+
+##### 
+##### 
+#### Figures
+
+##### Pocillopora resp. plot
+p.respiration=ddply(p.resp, c("Treatment", "Nutrient.Treatment", "Heat.Treatment"), summarise,
+                    N    = length(nmol.min.larv.cons[!is.na(nmol.min.larv.cons)]),
+                    mean = mean(nmol.min.larv.cons, na.rm=TRUE),
+                    sd   = sd(nmol.min.larv.cons, na.rm=TRUE),
+                    se   = sd / sqrt(N), 
+                    max = max(nmol.min.larv.cons, na.rm=TRUE))
+
+p.resp.graph= ggplot(p.respiration, aes(x=Nutrient.Treatment, y=mean, fill=Heat.Treatment)) + 
+  scale_fill_manual(values = c("cornflowerblue","coral"), name="Temperature") +
+  labs(x="", y=expression(bold(Oxygen~Consumption~nmol~O[2]~min^{-1}~larva^{-1}))) +
+  geom_bar(position=position_dodge(), stat="identity") +
+  geom_errorbar(aes(ymin=mean-se, ymax=mean+se), 
+                width=.2,             
+                position=position_dodge(.9))+
+  theme_classic()+
+  theme(legend.key.height=unit(0.5, "cm"),
+        text = element_text(size = 12), 
+        axis.text = element_text(size = 8, color="black"),
+        axis.title = element_text(size = 12, face="bold"),
+        legend.title = element_text(size = 12, face="bold"),
+        legend.text = element_text(size = 12, color="black"), 
+        legend.position="none")+
+  ggtitle("P. acuta") +
+  theme(plot.title= element_text(face="italic"))+
+  coord_cartesian(ylim=c(0,0.205))
+
+
+##### Montipora resp. plot
+m.respiration=ddply(m.resp, c("Treatment", "Nutrient.Treatment", "Heat.Treatment"), summarise,
+                    N    = length(nmol.min.larv.cons[!is.na(nmol.min.larv.cons)]),
+                    mean = mean(nmol.min.larv.cons, na.rm=TRUE),
+                    sd   = sd(nmol.min.larv.cons, na.rm=TRUE),
+                    se   = sd / sqrt(N), 
+                    max = max(nmol.min.larv.cons, na.rm=TRUE))
+
+##
+m.resp.graph= ggplot(m.respiration, aes(x=Nutrient.Treatment, y=mean, fill=Heat.Treatment)) + 
+  scale_fill_manual(values = c("cornflowerblue","coral"), name="Temperature") +
+  labs(x="", y="") +
+  geom_bar(position=position_dodge(), stat="identity") +
+  geom_errorbar(aes(ymin=mean-se, ymax=mean+se), 
+                width=.2,             
+                position=position_dodge(.9))+
+  theme_classic()+
+ theme(legend.key.height=unit(0.5, "cm"),
+        text = element_text(size = 12), 
+        axis.text = element_text(size = 8, color="black"),
+        axis.title = element_text(size = 12, face="bold"),
+        legend.title = element_text(size = 12, face="bold"),
+        legend.text = element_text(size = 12, color="black"), 
+        legend.position="none")+
+  ggtitle("M. capitata") +
+  theme(plot.title= element_text(face="italic")) +
+  coord_cartesian(ylim=c(0,0.205))
+
+
+
+### Creating panelled figure
+label="Nutrient Treatment"
+
+resp.legend=get_legend(m.resp.graph+theme(legend.position = "right"))
+resp.row=plot_grid(p.resp.graph, m.resp.graph, labels = c("a","b"), align = "h", nrow=1, label_size = 10) +
+  draw_figure_label(label, position = "bottom", size = 10, fontface="bold") 
+c.resp.graph=plot_grid(resp.row, resp.legend, nrow=1, rel_widths = c(5,1))
+
+c.resp.graph
+dev.copy(pdf, "figures/combined.resp.pdf", width = 4, height = 5)
+dev.off()
+```
+  
+The full model testing and assumptions of statistical tests (output not shown).
+```{r respiration stats, results='hide', fig.show='hide'}
+######Pocillopora respiration
+p.resp.model=lm(nmol.min.larv~Heat.Treatment*Nutrient.Treatment, data=p.resp)
+anova(p.resp.model)
+shapiro.test(p.resp.model$residuals)
+leveneTest(p.resp.model)
+
+posthoc<-emmeans(p.resp.model, ~Heat.Treatment)
+multcomp::cld(posthoc)
+
+
+######Montipora respiration
+m.resp.model=lm(nmol.min.larv~Heat.Treatment*Nutrient.Treatment, data=m.resp)
+anova(m.resp.model)
+shapiro.test(m.resp.model$residuals)
+leveneTest(m.resp.model)
+```
+  
+**The final models for for *P. acuta* and *M. capitata* respiration.**
+```{r final respiration models}
+anova(p.resp.model)
+anova(m.resp.model)
+```
+
+### Symbiont cells  
+First the figure, then models for *P. acuta* and *M. capitata*. Note that *L. scutaria* is not present here since larvae are aposymbiotic.  First the figure, then the complete stats, then final models. 
+```{r symbiont counts, fig.show='hold', fig.height=4, fig.width=7, results='hide'}
+#############################################################################
+############# Final Symbiont Count Figure ###################################
+#############################################################################
+
+c.cell.counts=read.csv("Data/symbiont density.csv")
+c.cell.counts$Nutrient.Treatment=factor(c.cell.counts$Nutrient.Treatment, 
+                                        levels=c("none", "Control", "Nitrate", "Phosphate", "N+P"))
+
+p.cell=subset(c.cell.counts, Species=="Pocillopora acuta")
+m.cell=subset(c.cell.counts, Species=="Montipora capitata")
+
+##### Figure dataframes
+p.counts <- ddply(p.cell, c("Treatment", "Heat.Treatment", "Nutrient.Treatment"), summarise,
+                  N    = length(Conc.per.larv[!is.na(Conc.per.larv)]),
+                  mean = mean(Conc.per.larv, na.rm=TRUE),
+                  sd   = sd(Conc.per.larv, na.rm=TRUE),
+                  se   = sd / sqrt(N), 
+                  max = max(Conc.per.larv, na.rm=TRUE))
+
+m.counts <- ddply(m.cell, c("Treatment", "Heat.Treatment", "Nutrient.Treatment"), summarise,
+                  N    = length(Conc.per.larv[!is.na(Conc.per.larv)]),
+                  mean = mean(Conc.per.larv, na.rm=TRUE),
+                  sd   = sd(Conc.per.larv, na.rm=TRUE),
+                  se   = sd / sqrt(N), 
+                  max = max(Conc.per.larv, na.rm=TRUE))
+
+
+### Pocillopora cell density plot
+p.counts.graph= ggplot(p.counts, aes(x=Nutrient.Treatment, y=mean, fill=Heat.Treatment)) + 
+  scale_fill_manual(values = c("cornflowerblue","coral"), name="Temperature") +
+  labs(x="", y=expression(bold(Mean~Symbiont~Cell~Larva^{-1}))) +
+  geom_bar(position=position_dodge(), stat="identity") +
+  geom_errorbar(aes(ymin=mean-se, ymax=mean+se), 
+                width=.2,             
+                position=position_dodge(.9))+
+  theme_classic()+
+  theme(legend.key.height=unit(0.5, "cm"),
+        text = element_text(size = 12), 
+        axis.text = element_text(size = 8, color="black"),
+        axis.title = element_text(size = 12, face="bold"),
+        legend.title = element_text(size = 12, face="bold"),
+        legend.text = element_text(size = 12, color="black"), 
+        legend.position="none")+
+  ggtitle("P. acuta") +
+  theme(plot.title= element_text(face="italic"))
+  coord_cartesian(ylim=c(0,13500))
+
+
+### Montipora.cell density plot
+m.counts.graph= ggplot(m.counts, aes(x=Nutrient.Treatment, y=mean, fill=Heat.Treatment)) + 
+  scale_fill_manual(values = c("cornflowerblue","coral"), name="Temperature") +
+  labs(x="", y="") +
+  geom_bar(position=position_dodge(), stat="identity") +
+  geom_errorbar(aes(ymin=mean-se, ymax=mean+se), 
+                width=.2,             
+                position=position_dodge(.9)) +
+  coord_cartesian(ylim=c(0,13500)) +
+  theme_classic()+
+  theme(legend.key.height=unit(0.5, "cm"),
+        text = element_text(size = 12), 
+        axis.text = element_text(size = 8, color="black"),
+        axis.title = element_text(size = 12, face="bold"),
+        legend.title = element_text(size = 12, face="bold"),
+        legend.text = element_text(size = 12, color="black"), 
+        legend.position="none")+
+  ggtitle("M. capitata") +
+  theme(plot.title= element_text(face="italic"))
+
+#### Arrange Graphs with cowplot
+label="Nutrient Treatment"
+
+counts.legend=get_legend(m.counts.graph+theme(legend.position = "right"))
+counts.row=plot_grid(p.counts.graph, m.counts.graph, labels = c("a","b"), align = "h", nrow=1, label_size = 10) +
+  draw_figure_label(label, position = "bottom", size = 10, fontface="bold")
+counts.graph=plot_grid(counts.row, counts.legend, nrow=1, rel_widths = c(5,1))
+
+counts.graph
+dev.copy(pdf, "figures/combined.symbiont.counts.pdf", width = 7, height = 5)
+dev.off()
+```
+  
+The full model testing and assumptions of statistical tests (output not shown).
+```{r models, results='hide'}
+### models
+# Pocillopora
+
+# p.cell is dataframe
+p.count.model=lm(Conc.per.larv~Heat.Treatment*Nutrient.Treatment, data=p.cell)
+anova(p.count.model)
+shapiro.test(p.count.model$residuals)  #Not normal
+leveneTest(p.count.model)
+
+p.cell$log.conc.per.larv=log(p.cell$Conc.per.larv)
+p.log.model=lm(log.conc.per.larv~Heat.Treatment*Nutrient.Treatment, data=p.cell)
+anova(p.log.model)
+shapiro.test(p.log.model$residuals)  #Normal after log transformation
+leveneTest(p.log.model)
+
+###### Montipora cell count
+# m.cell is dataframe
+m.count.model=lm(Conc.per.larv~Heat.Treatment*Nutrient.Treatment, data=m.cell)
+anova(m.count.model)
+shapiro.test(m.count.model$residuals)  
+leveneTest(m.count.model)
+posthoc.m = emmeans(m.count.model, ~Nutrient.Treatment)
+multcomp::cld(posthoc.m)
+```
+  
+**For both *P. acuta* and *M. capitata*: the final models for symbiont density.**
+```{r symbiont count final models}
+anova(p.count.model)
+anova(m.count.model)
+```
+
+### Larval Size  
+  
+The % change in larval size from the start to end of the experiment for all three species. First the figure, then the complete stats, then final models.
+```{r larval size figure, fig.height=4, fig.width=8.5, results='hide'}
+##############################################################################################
+########################## Combined Size Comparison Figure ###################################
+##############################################################################################
+
+# Load data
+combined.size=read.csv("data/larval size.csv")
+combined.size$Area.micrometer=(combined.size$Area)*1000
+combined.size$Percent.change=(((combined.size$Area.micrometer)/47.42105)-1)*100
+combined.size=combined.size%>%select(Species, Treatment, Nutrient.Treatment, Heat.Treatment, Area.micrometer)
+
+levels(combined.size$Nutrient.Treatment)[levels(combined.size$Nutrient.Treatment)==
+                                           "nitrate and phosphate"] <- "N+P"
+combined.size$Nutrient.Treatment=factor(combined.size$Nutrient.Treatment, 
+                                        levels=c("none", "control", "nitrate", "phosphate", "N+P"))
+
+############
+#Lobactis
+lobactis.size=subset(combined.size, Species=="Lobactis scutaria")
+lobactis.size$Percent.change=(((lobactis.size$Area.micrometer)/47.42105)-1)*100
+
+lobactis.end=subset(lobactis.size, Treatment != "Day 0")
+lobactis.end$real.percent=(((lobactis.end$Area.micrometer)/47.42105)-1)*100
+
+#Pocillopora
+pocillopora.size=subset(combined.size, Species=="Pocillopora acuta")
+pocillopora.size$Percent.change=(((pocillopora.size$Area.micrometer)/843.9130435)-1)*100
+
+pocillopora.end=subset(pocillopora.size, Treatment != "Day 0")
+pocillopora.end$real.percent=(((pocillopora.end$Area.micrometer)/843.9130435)-1)*100
+
+
+#Montipora
+montipora.size=subset(combined.size, Species=="Montipora capitata")
+montipora.size$Percent.change=(((montipora.size$Area.micrometer)/219)-1)*100
+
+montipora.end=subset(montipora.size, Treatment != "Day 0")
+montipora.end$real.percent=(((montipora.end$Area.micrometer)/219)-1)*100
+
+#### Figures
+l.size <- ddply(lobactis.end, c("Treatment", "Heat.Treatment", "Nutrient.Treatment"), summarise,
+                N    = length(real.percent[!is.na(real.percent)]),
+                mean = mean(real.percent, na.rm=TRUE),
+                sd   = sd(real.percent, na.rm=TRUE),
+                se   = sd / sqrt(N), 
+                max = max(real.percent, na.rm=TRUE))
+
+
+l.size.graph= ggplot(l.size, aes(x=Nutrient.Treatment, y=mean, fill=Heat.Treatment)) + 
+  scale_fill_manual(values = c("cornflowerblue","coral"), name="Temperature") +
+  labs(x="", y="Mean % Change in Larval Area") +
+  geom_bar(position=position_dodge(), stat="identity") +
+  geom_errorbar(aes(ymin=mean-se, ymax=mean+se), 
+                width=.2,             
+                position=position_dodge(.9))+
+  theme_classic()+
+   theme(legend.key.height=unit(0.5, "cm"),
+        text = element_text(size = 12), 
+        axis.text = element_text(size = 8, color="black"),
+        axis.title = element_text(size = 12, face="bold"),
+        legend.title = element_text(size = 12, face="bold"),
+        legend.text = element_text(size = 12, color="black"), 
+        legend.position="none")+
+  ggtitle("L. scutaria") +
+  theme(plot.title= element_text(face="italic"))+
+  coord_cartesian(ylim=c(-100,100))
+
+
+#### Pocillopora
+p.size<- ddply(pocillopora.end, c("Treatment", "Heat.Treatment", "Nutrient.Treatment"), summarise,
+               N    = length(real.percent[!is.na(real.percent)]),
+               mean = mean(real.percent, na.rm=TRUE),
+               sd   = sd(real.percent, na.rm=TRUE),
+               se   = sd / sqrt(N), 
+               max = max(real.percent, na.rm=TRUE))
+
+p.size.graph= ggplot(p.size, aes(x=Nutrient.Treatment, y=mean, fill=Heat.Treatment)) + 
+  scale_fill_manual(values = c("cornflowerblue","coral"), name="Temperature") +
+  labs(x="Nutrient Treatment", y="") +
+  geom_bar(position=position_dodge(), stat="identity") +
+  geom_errorbar(aes(ymin=mean-se, ymax=mean+se), 
+                width=.2,             
+                position=position_dodge(.9))+
+  theme_classic()+
+   theme(legend.key.height=unit(0.5, "cm"),
+        text = element_text(size = 12), 
+        axis.text = element_text(size = 8, color="black"),
+        axis.title = element_text(size = 12, face="bold"),
+        legend.title = element_text(size = 12, face="bold"),
+        legend.text = element_text(size = 12, color="black"), 
+        legend.position="none")+
+  ggtitle("P. acuta") +
+  theme(plot.title= element_text(face="italic"))+
+  coord_cartesian(ylim=c(-100,100))
+
+
+### Montipora
+m.size<- ddply(montipora.end, c("Treatment", "Heat.Treatment", "Nutrient.Treatment"), summarise,
+               N    = length(real.percent[!is.na(real.percent)]),
+               mean = mean(real.percent, na.rm=TRUE),
+               sd   = sd(real.percent, na.rm=TRUE),
+               se   = sd / sqrt(N), 
+               max = max(real.percent, na.rm=TRUE))
+
+m.size.graph= ggplot(m.size, aes(x=Nutrient.Treatment, y=mean, fill=Heat.Treatment)) + 
+  scale_fill_manual(values = c("cornflowerblue","coral"), name="Temperature") +
+  labs(x="", y="") +
+  geom_bar(position=position_dodge(), stat="identity") +
+  geom_errorbar(aes(ymin=mean-se, ymax=mean+se), 
+                width=.2,             
+                position=position_dodge(.9))+
+  theme_classic()+
+   theme(legend.key.height=unit(0.5, "cm"),
+        text = element_text(size = 12), 
+        axis.text = element_text(size = 8, color="black"),
+        axis.title = element_text(size = 12, face="bold"),
+        legend.title = element_text(size = 12, face="bold"),
+        legend.text = element_text(size = 12, color="black"), 
+        legend.position="none")+
+  ggtitle("M. capitata") +
+  theme(plot.title= element_text(face="italic"))+
+  coord_cartesian(ylim=c(-100,100))
+
+
+
+#### plot
+size.legend=get_legend(l.size.graph+theme(legend.position = "right"))
+size.row=plot_grid(l.size.graph,p.size.graph, m.size.graph, labels = c("a","b","c"), align = "h", nrow=1, label_size=12)
+
+##Combined panelled figure
+plot_grid(size.row, size.legend, nrow=1, rel_widths = c(5,1))
+dev.copy(pdf, "figures/combined.size.pdf", width = 7, height = 4)
+dev.off()
+
+```
+  
+The full model testing and assumptions of statistical tests (output not shown).
+```{r larval size, results='hide'}
+##### Statistics: change in size
+
+kruskal.test(Percent.change ~ Heat.Treatment, data = lobactis.end) # no effect of temp
+kruskal.test(Percent.change ~ Nutrient.Treatment, data = lobactis.end) # effect of nutrients
+kruskal.test(Percent.change ~ Treatment, data = lobactis.end) # effect combined treatments
+
+pairwise.wilcox.test(lobactis.end$Percent.change, lobactis.end$Treatment,
+                     p.adjust.method = "BH", exact=FALSE)
+
+l.DT1 = dunnTest(Percent.change ~ Treatment,
+                 data=lobactis.end,
+                 method="bh")
+l.PT1 = l.DT1$res
+cldList(P.adj ~ Comparison,
+        data = l.PT1,
+        threshold = 0.05)
+
+
+###### Pocillopora size by treatment
+kruskal.test(Percent.change ~ Heat.Treatment, data = pocillopora.end) # no effect
+kruskal.test(Percent.change ~ Nutrient.Treatment, data = pocillopora.end) # no effect
+kruskal.test(Percent.change ~ Treatment, data = pocillopora.end) # no effect
+
+###### Montipora size by treatment
+
+kruskal.test(Percent.change ~ Heat.Treatment, data = montipora.end) # effect (barely)
+kruskal.test(Percent.change ~ Nutrient.Treatment, data = montipora.end) # effect
+kruskal.test(Percent.change ~ Treatment, data = montipora.end) # effect
+
+pairwise.wilcox.test(montipora.end$Percent.change, montipora.end$Treatment,
+                     p.adjust.method = "BH", exact=FALSE)
+
+m.DT1 = dunnTest(Percent.change ~ Treatment,
+                 data=montipora.end,
+                 method="bh")
+
+m.PT1 = m.DT1$res
+cldList(P.adj ~ Comparison,
+        data = m.PT1,
+        threshold = 0.05)
+```
+  
+**For *L. scutaria*: final larval size models (1) Temperature, (2) Nutrients, (3) Temp x Nutr.**
+```{r Lscut size final models}
+###### Lobactis size by treatment
+kruskal.test(Percent.change ~ Heat.Treatment, data = lobactis.end) # no effect of temp
+kruskal.test(Percent.change ~ Nutrient.Treatment, data = lobactis.end) # effect of nutrients
+kruskal.test(Percent.change ~ Treatment, data = lobactis.end) # effect combined treatments
+```
+  
+**For *P. acuta*: final larval size models (1) Temperature, (2) Nutrients, (3) Temp x Nutr.**
+```{r Pacut size final models}
+###### Pocillopora size by treatment
+kruskal.test(Percent.change ~ Heat.Treatment, data = pocillopora.end) # no effect
+kruskal.test(Percent.change ~ Nutrient.Treatment, data = pocillopora.end) # no effect
+kruskal.test(Percent.change ~ Treatment, data = pocillopora.end) # no effect
+
+```
+  
+**For *M. capitata*: final larval size models (1) Temperature, (2) Nutrients, (3) Temp x Nutr.**
+```{r Mcap size final models}
+###### Montipora size by treatment
+kruskal.test(Percent.change ~ Heat.Treatment, data = montipora.end) # effect (barely)
+kruskal.test(Percent.change ~ Nutrient.Treatment, data = montipora.end) # effect
+kruskal.test(Percent.change ~ Treatment, data = montipora.end) # effect
+```
+

@@ -1,7 +1,7 @@
 ---
 title: "Temperature and nutrient effects on the larvae of three Hawaiian corals"
 author: "Chris B Wall, with RM Kitchen, M Piscetta, M Rocha de Souza, EA Lenz, D Schar, RD Gates"
-date: "11/3/2019"
+date: "11/26/2019"
 output:
   html_document:
     code_folding: hide
@@ -25,9 +25,21 @@ library(rcompanion) #has dependencies with DescTools that can lead to loading is
 ```
 
 ## Synposis  
-Corals are threatened by rising ocean temperatures and increased nutrient loading in coastal areas. The threats posed by elevated temperatures and nutrients for coral larvae -- the early stages of the coral lifecycle -- however are less certain, and the biology of corals in larval stages can differ considerably. For instance, some species brood larvae with symbionts inherited from parents, others broadcast spawn egg-sperm bundles that receive endosymbionts from parents, while other egg-sperm bundles are aposymbontic and endosymbionts are obtaiend from the water column (i.e. horizontal transmittion).  
+Corals are threatened by rising ocean temperatures and increased nutrient loading in coastal areas. The threats posed by elevated temperatures and nutrients for coral larvae -- the early stages of the coral lifecycle -- however are less certain, and the biology of corals in larval stages can differ considerably from that of adults. For instance, some species brood larvae with symbionts inherited from parents, others broadcast spawn egg-sperm bundles that receive endosymbionts from parents, while other egg-sperm bundles are aposymbontic and endosymbionts are obtained from the water column (i.e. horizontal transmittion).  
   
-The goal of this project was to understand how different temperature and nutrient concentrations affect the larvae of three Hawaiian reef coral taxa: *Lobactis scutaria* (broadcast spawner, aposymbiotic larvae), *Pocillopora acuta* (brooder, symbiotic larvae), and *Montipora capitata* (broadcast spawner, symbiotic larvae).  Temperature treatments oscillated with natural diel cycles at means of ca. 27°C and 29°C (*ambient and elevated temperatures*). Nutrient concentrations were elevated nitrate (5 μM NO~3~^-^), elevated phosphate (1μM PO~4~^3-^) and a combined elevated nitrate and phosphate treatment (+N+P). We evaluated effects of treatments after 4 or 5 days of exposure by assessing *(1) larval survivorship, (2) dark despiration rates, (3) symbiont cell densities, and (4) change in larval size.*  
+The goal of this project was to understand how different temperature and nutrient concentrations affect the larvae of three Hawaiian reef coral taxa: *Lobactis scutaria* (broadcast spawner, aposymbiotic larvae), *Pocillopora acuta* (brooder, symbiotic larvae), and *Montipora capitata* (broadcast spawner, symbiotic larvae).  
+
+
+
+<center>
+
+![**Figure 1**. Adult and larvae of the Hawaiian corals (a,b) *Lobactis scutaria* and (c,d) *Pocillopora acuta*, with *Montipora capitata* (e) adult colonies, (f) eggs, and (g) planulae larvae. Metamorphosing P. acuta larvae (d, top right). L. scutaria and M. capitata are broadcast spawners, P. acuta is a brooder. L. scutaria larvae are initially aposymbiotic, while P. acuta and M. capitata inherit Symbiodiniaceae through vertical transmission. (PC: all authors, except d: R. Ritson-Williams](figures/Fig 1_coral.jpg){ width=50%}
+
+</center>  
+ 
+  
+  
+Temperature treatments oscillated with natural diel cycles at means of ca. 27°C and 29°C (*ambient and elevated temperatures*). Nutrient concentrations were elevated nitrate (5 μM NO~3~^-^), elevated phosphate (1μM PO~4~^3-^) and a combined elevated nitrate and phosphate treatment (+N+P). We evaluated effects of treatments after 4 or 5 days of exposure by assessing *(1) larval survivorship, (2) dark despiration rates, (3) symbiont cell densities, and (4) change in larval size.*  
   
   
 ## Temperauture treatments  
@@ -132,7 +144,7 @@ temp.legend=get_legend(l.temp+theme(legend.position = "top") +
                          theme(legend.text = element_text(size = 10, face="plain")))
 ```
 
-```{r temp plots, fig.height=5, fig.width=4, results='hide'}
+```{r temp plots, fig.height=5, fig.width=4, results='hide', fig.cap="**Figure 2**. Seawater temperatures for three corals (a) *Lobactis scutaria*, (b) *Pocillopora acuta*, and (c) *Montipora capitata* exposed to orthogonal ambient (27°C) and high (29°C) temperatures and four orthogonal nutrient concentrations (see Table S2). Dashed lines indicate mean temperature for each treatment."}
 ##combined species panelled figure
 plot_grid(temp.legend, c.temp.col, ncol=1, rel_heights = c(.2, 4))
 dev.copy(pdf, "figures/combined.temp.pdf", width = 6, height = 8)
@@ -145,7 +157,8 @@ We measured larvae survivorship, dark respiration, symbiont densities, and chang
   
 ### Survivorship  
 First the figure, then the complete stats, then final models.
-```{r survivorship figure, results='hide'}
+```{r survivorship figure, results='hide', fig.cap="**Figure 3**. Survivorship for larvae of three coral species exposed to ambient (solid lines) and high (dashed lines) seawater temperatures and four nutrient concentrations of ambient (control) and elevated nitrate (+N) and phosphate (+P)."}
+
 detach("package:plyr", unload = TRUE) # do this here if get error, plyr and dplyr conflict
 
 ########################## Combined Daily Survivorship Figure ###################################
@@ -187,13 +200,15 @@ l.long_surv = l.daily.surv%>%select(-Tube,-Species,-Month,-Final.Survivorship,-T
 
 ####### lobactis.plot
 l.long.surv=ggplot(l.long_surv)+ aes(Duration,avg,color=Nutrient.Treatment, linetype=Heat.Treatment)+
-  geom_point(size=1)+
+  geom_point(size=1, position=position_dodge(1))+
   geom_line(size=0.6)+
   geom_errorbar(aes(ymin=avg-sterr, ymax=avg+sterr, width=0),position=position_dodge(1), lty=1)+
   theme_classic(base_size=12)+
   labs(x="",y="Survivorship")+
   guides(col=guide_legend(ncol=2))+
-  scale_colour_manual(name="Nutrients", values=c("mediumseagreen","mediumorchid2","sky blue", "coral"))+
+  scale_colour_manual(name="Nutrients", values=c("mediumseagreen","mediumorchid2","skyblue", "coral"))+
+  scale_linetype_manual(name="Heat Treatment", values = c(1, 2),
+                        labels = c("27°C", "29°C")) +
   scale_x_continuous(breaks=seq(0,96,24),limits=c(0,96))+
   scale_y_continuous(limits=c(0,1.05))+
   ggtitle("L. scutaria") +
@@ -222,13 +237,13 @@ p.long_surv = p.daily.surv%>%select(-Tube,-Species,-Month,-Final.Survivorship,-T
   unite(Treatment,Heat.Treatment,Nutrient.Treatment,sep=" ", remove=FALSE)
 
 p.long.surv=ggplot(p.long_surv)+aes(Duration,avg,color=Nutrient.Treatment, linetype=Heat.Treatment)+
-  geom_point(size=1)+
+  geom_point(size=1, position=position_dodge(1))+
   geom_line(size=0.6) +
   geom_errorbar(aes(ymin=avg-sterr, ymax=avg+sterr, width=0),position=position_dodge(1), lty=1)+
   theme_classic(base_size=12)+
   labs(x="Hours",y="")+
   guides(col=guide_legend(ncol=2))+
-  scale_colour_manual(name="Nutrients", values=c("mediumseagreen","mediumorchid2","sky blue", "coral"))+
+  scale_colour_manual(name="Nutrients", values=c("mediumseagreen","mediumorchid2","skyblue", "coral"))+
   scale_x_continuous(breaks=seq(0,120,24),limits=c(0,120))+
   scale_y_continuous(limits=c(0,1.05))+
   theme(legend.key.height=unit(0.5, "cm"),
@@ -257,13 +272,13 @@ m.long_surv = m.daily.surv%>%select(-Tube,-Species,-Month,-Final.Survivorship,-T
 
 ####
 m.long.surv=ggplot(m.long_surv)+aes(Duration,avg,color=Nutrient.Treatment, linetype=Heat.Treatment)+
-  geom_point(size=1)+
+  geom_point(size=1, position=position_dodge(1))+
   geom_line(size=0.6)+
   geom_errorbar(aes(ymin=avg-sterr, ymax=avg+sterr, width=0),position=position_dodge(1), lty=1)+
   theme_classic(base_size=12)+
   labs(x="",y="")+
   guides(col=guide_legend(ncol=2))+
-  scale_colour_manual(name="Nutrients", values=c("mediumseagreen","mediumorchid2","sky blue", "coral"))+
+  scale_colour_manual(name="Nutrients", values=c("mediumseagreen","mediumorchid2","skyblue", "coral"))+
   scale_x_continuous(breaks=seq(0,120,24),limits=c(0,120))+
   scale_y_continuous(limits=c(0,1.05))+
   theme(legend.key.height=unit(0.5, "cm"),
@@ -496,9 +511,10 @@ anova(m.cox_model1)
 ### Respiration  
   
 Data for for *P. acuta* and *M. capitata*. Note that *L. scutaria* is not present here since larvae had very low respiration rates and low signal : noise ratio.  First the figure, then the complete stats, then final models.
-```{r respiration figure, fig.show='hold', fig.height=4, fig.width=7, results='hide'}
-###################################### Combined Respiration Measurements ###########################################
-#####################################################################################################################
+```{r respiration figure, fig.show='hold', fig.height=4, fig.width=7, results='hide', fig.cap="**Figure 4a-b**.  Coral larva (a,b) dark respiration rates for Pocillopora acuta and Montipora capitata in response to orthogonal temperature and nutrient treatments. L. scutaria respiration rates were poorly resolved and larvae are aposymbiotic."}
+
+####################### Combined Respiration Measurements ###########################################
+###########################################################################################
 
 resp.slopes=read.csv("Data/respiration slopes.csv")
 resp.slopes$Nutrient.Treatment=factor(resp.slopes$Nutrient.Treatment, 
@@ -551,7 +567,7 @@ m.respiration=ddply(m.resp, c("Treatment", "Nutrient.Treatment", "Heat.Treatment
 
 ##
 m.resp.graph= ggplot(m.respiration, aes(x=Nutrient.Treatment, y=mean, fill=Heat.Treatment)) + 
-  scale_fill_manual(values = c("cornflowerblue","coral"), name="Temperature") +
+  scale_fill_manual(values = c("cornflowerblue","coral"), name="Temperature", labels = c("27°C", "29°C")) +
   labs(x="", y="") +
   geom_bar(position=position_dodge(), stat="identity") +
   geom_errorbar(aes(ymin=mean-se, ymax=mean+se), 
@@ -611,7 +627,8 @@ anova(m.resp.model)
 
 ### Symbiont cells  
 First the figure, then models for *P. acuta* and *M. capitata*. Note that *L. scutaria* is not present here since larvae are aposymbiotic.  First the figure, then the complete stats, then final models. 
-```{r symbiont counts, fig.show='hold', fig.height=4, fig.width=7, results='hide'}
+```{r symbiont counts, fig.show='hold', fig.height=4, fig.width=7, results='hide', fig.cap="**Figure 4c-d**.  Coral larva (c,d) symbiont cell densities for Pocillopora acuta and Montipora capitata in response to orthogonal temperature and nutrient treatments. L. scutaria respiration rates were poorly resolved and larvae are aposymbiotic."}
+
 #############################################################################
 ############# Final Symbiont Count Figure ###################################
 #############################################################################
@@ -662,7 +679,7 @@ p.counts.graph= ggplot(p.counts, aes(x=Nutrient.Treatment, y=mean, fill=Heat.Tre
 
 ### Montipora.cell density plot
 m.counts.graph= ggplot(m.counts, aes(x=Nutrient.Treatment, y=mean, fill=Heat.Treatment)) + 
-  scale_fill_manual(values = c("cornflowerblue","coral"), name="Temperature") +
+  scale_fill_manual(values = c("cornflowerblue","coral"), name="Temperature", labels = c("27°C", "29°C")) +
   labs(x="", y="") +
   geom_bar(position=position_dodge(), stat="identity") +
   geom_errorbar(aes(ymin=mean-se, ymax=mean+se), 
@@ -684,7 +701,7 @@ m.counts.graph= ggplot(m.counts, aes(x=Nutrient.Treatment, y=mean, fill=Heat.Tre
 label="Nutrient Treatment"
 
 counts.legend=get_legend(m.counts.graph+theme(legend.position = "right"))
-counts.row=plot_grid(p.counts.graph, m.counts.graph, labels = c("a","b"), align = "h", nrow=1, label_size = 10) +
+counts.row=plot_grid(p.counts.graph, m.counts.graph, labels = c("c","d"), align = "h", nrow=1, label_size = 10) +
   draw_figure_label(label, position = "bottom", size = 10, fontface="bold")
 counts.graph=plot_grid(counts.row, counts.legend, nrow=1, rel_widths = c(5,1))
 
@@ -722,14 +739,14 @@ multcomp::cld(posthoc.m)
   
 **For both *P. acuta* and *M. capitata*: the final models for symbiont density.**
 ```{r symbiont count final models}
-anova(p.count.model)
+anova(p.log.model)
 anova(m.count.model)
 ```
 
 ### Larval Size  
   
 The % change in larval size from the start to end of the experiment for all three species. First the figure, then the complete stats, then final models.
-```{r larval size figure, fig.height=4, fig.width=8.5, results='hide'}
+```{r larval size figure, fig.height=4, fig.width=8.5, results='hide', fig.cap="**Figure 5**.  Percent change in larvae size in three coral species in response to orthogonal temperature and nutrient treatments."}
 ##############################################################################################
 ########################## Combined Size Comparison Figure ###################################
 ##############################################################################################
@@ -778,7 +795,7 @@ l.size <- ddply(lobactis.end, c("Treatment", "Heat.Treatment", "Nutrient.Treatme
 
 
 l.size.graph= ggplot(l.size, aes(x=Nutrient.Treatment, y=mean, fill=Heat.Treatment)) + 
-  scale_fill_manual(values = c("cornflowerblue","coral"), name="Temperature") +
+  scale_fill_manual(values = c("cornflowerblue","coral"), name="Temperature", labels = c("27°C", "29°C")) +
   labs(x="", y="Mean % Change in Larval Area") +
   geom_bar(position=position_dodge(), stat="identity") +
   geom_errorbar(aes(ymin=mean-se, ymax=mean+se), 

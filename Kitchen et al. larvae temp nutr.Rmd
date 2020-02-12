@@ -1,7 +1,8 @@
 ---
 title: "Temperature and nutrient effects on the larvae of three Hawaiian corals"
-author: "Chris B Wall, with RM Kitchen, M Piscetta, M Rocha de Souza, EA Lenz, D Schar, RD Gates"
-date: "11/26/2019"
+author: "Chris B Wall, with RM Kitchen, M Piscetta"
+email: "cbwall@hawaii.edu"
+date: "2/10/2020"
 output:
   html_document:
     code_folding: hide
@@ -23,7 +24,9 @@ library(rcompanion) #has dependencies with DescTools that can lead to loading is
 # note that dplyr and plyr have conflicts, load and unlaod with dplyr LAST if issues in code exist
 
 ```
+*Kitchen RM, Piscetta M, Lenz EA, de Souza MR, Schar D, Gates RD, Wall CB. Symbiont transmission and reproductive mode influence responses of three Hawaiian coral larvae to elevated temperature and nutrients. (2020) Coral Reefs*
 
+  
 ## Synposis  
 Corals are threatened by rising ocean temperatures and increased nutrient loading in coastal areas. The threats posed by elevated temperatures and nutrients for coral larvae -- the early stages of the coral lifecycle -- however are less certain, and the biology of corals in larval stages can differ considerably from that of adults. For instance, some species brood larvae with symbionts inherited from parents, others broadcast spawn egg-sperm bundles that receive endosymbionts from parents, while other egg-sperm bundles are aposymbontic and endosymbionts are obtained from the water column (i.e. horizontal transmittion).  
   

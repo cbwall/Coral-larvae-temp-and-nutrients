@@ -3,9 +3,9 @@ The goal of this project was to understand how different temperature and nutrien
 
 ## R files and Folders  
   *markdown files*  
-  - *Coral-larvae-temp-and-nutrients.Rproj* -- the R project, where Rmd file and all scripts executed
-  - *Kitchen-et-al.-larvae-temp-nutr.html*  -- the html output from R markdown
-  - *Kitchen et al. larvae temp nutr.Rmd* -- the R-markdown file with script-code chunks
+  -*Coral-larvae-temp-and-nutrients.Rproj* -- the R project, where Rmd file and all scripts executed
+  -*Kitchen-et-al.-larvae-temp-nutr.html*  -- the html output from R markdown
+  -*Kitchen et al. larvae temp nutr.Rmd* -- the R-markdown file with script-code chunks
 
   **data** folder  
   - *larval size.csv* -- larvae size

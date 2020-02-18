@@ -2,7 +2,7 @@
 The goal of this project was to understand how different temperature and nutrient concentrations affect the larvae of three Hawaiian reef coral taxa: *Lobactis scutaria* (broadcast spawner, aposymbiotic larvae), *Pocillopora acuta* (brooder, symbiotic larvae), and *Montipora capitata* (broadcast spawner, symbiotic larvae).  
 
 ## R files and Folders  
-  *markdown files*  
+  **markdown files**  
     *Coral-larvae-temp-and-nutrients.Rproj* -- the R project, where Rmd file and all scripts executed  
     *Kitchen-et-al.-larvae-temp-nutr.html*  -- the html output from R markdown  
     *Kitchen et al. larvae temp nutr.Rmd* -- the R-markdown file with script-code chunks  

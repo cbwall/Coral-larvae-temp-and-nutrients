@@ -7,7 +7,7 @@ The goal of this project was to understand how different temperature and nutrien
     *Kitchen-et-al.-larvae-temp-nutr.html*  -- the html output from R markdown  
     *Kitchen et al. larvae temp nutr.Rmd* -- the R-markdown file with script-code chunks  
 
-## Treatment and biological data 
+## Treatment and biological data  
  **data folder**  
      *larval size.csv* -- larvae size  
      *larval survivorship* -- larvae survivorship    
@@ -15,12 +15,12 @@ The goal of this project was to understand how different temperature and nutrien
      *symbiont density.csv* -- symbiont densities  
      *temp data.csv* -- temperature data  
        
-   **nutrients folder**
+   **nutrients folder**  
      *nutrients_nitrogen.csv* -- nitrogen in seawater analyses  
      *nutrients_phosphate.csv* -- phosphate in seawater analyses  
      *SLAB.water.csv* -- nutrients in stock solutions analyzed by SLAB at UH Mānoa  
     
- **figures folder**  
+ **figures folder**   
     *combined.daily.survivorship.pdf* -- larvae survivorship for 3 coral species  
     *combined.resp.pdf* -- larvae respiration for 2 coral species (sans *L. scutaria*)  
     *combined.size.pdf* -- change in larvae size for 3 species  

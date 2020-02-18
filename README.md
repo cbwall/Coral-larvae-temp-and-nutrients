@@ -1,5 +1,5 @@
 # Temperature and dissolved nutrient effects on coral larvae  
-*Kitchen RM, Piscetta M, Lenz EA, de Souza MR, Schar D, Gates RD, Wall CB (2020) Symbiont transmission and reproductive mode influence responses of three Hawaiian coral larvae to elevated temperature and nutrients. Coral Reefs*  
+Kitchen RM, Piscetta M, Lenz EA, de Souza MR, Schar D, Gates RD, Wall CB (2020) Symbiont transmission and reproductive mode influence responses of three Hawaiian coral larvae to elevated temperature and nutrients. *Coral Reefs*  
 
 The goal of this project was to understand how different temperature and nutrient concentrations affect the larvae of three Hawaiian reef coral taxa: *Lobactis scutaria* (broadcast spawner, aposymbiotic larvae), *Pocillopora acuta* (brooder, symbiotic larvae), and *Montipora capitata* (broadcast spawner, symbiotic larvae).  
 

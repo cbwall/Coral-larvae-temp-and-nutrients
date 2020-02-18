@@ -3,16 +3,16 @@ The goal of this project was to understand how different temperature and nutrien
 
 ## R files and Folders  
   *markdown files*  
-  -*Coral-larvae-temp-and-nutrients.Rproj* -- the R project, where Rmd file and all scripts executed
-  -*Kitchen-et-al.-larvae-temp-nutr.html*  -- the html output from R markdown
-  -*Kitchen et al. larvae temp nutr.Rmd* -- the R-markdown file with script-code chunks
+  -*Coral-larvae-temp-and-nutrients.Rproj* -- the R project, where Rmd file and all scripts executed  
+  -*Kitchen-et-al.-larvae-temp-nutr.html*  -- the html output from R markdown  
+  -*Kitchen et al. larvae temp nutr.Rmd* -- the R-markdown file with script-code chunks  
 
   **data** folder  
-  - *larval size.csv* -- larvae size
-  - *larval survivorship* -- larvae survivorship  
-  - *respiration slopes.csv* -- larvae survivorship  
-  - *symbiont density.csv* -- symbiont densities  
-  - *temp data.csv* -- temperature data  
+  -*larval size.csv* -- larvae size  
+  -*larval survivorship* -- larvae survivorship    
+  -*respiration slopes.csv* -- larvae survivorship   
+  -*symbiont density.csv* -- symbiont densities  
+  -*temp data.csv* -- temperature data  
   
     **nutrients** folder
     - *nutrients_nitrogen.csv* -- nitrogen in seawater analyses  

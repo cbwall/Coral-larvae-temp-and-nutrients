@@ -63,7 +63,17 @@ The goal of this project was to understand how different temperature and nutrien
        *Reading* = number identifying each temperature measurement across experiment  
        *Total_Hours* = total number of 15 minute intervals in a 24 hour period (96)
        
-   **nutrients folder**  
+ **figures folder**   
+    - *combined.daily.survivorship.pdf* -- larvae survivorship for 3 coral species:  **this is Figure 3**  
+    - *combined.resp.pdf* -- larvae respiration for 2 coral species (sans *L. scutaria*)  **this is Figure 4ab**  
+    - *combined.size.pdf* -- change in larvae size for 3 species:  **this is Figure 5**  
+    - *combined.symbiont.counts.pdf* -- symbiont counts for 2 species (sans *L. scutaria*)  **this is Figure 4cd**  
+    - *combined.temp.pdf* -- temperature plot for 3 species:  **this is Figure 2**  
+    - *Fig 1_coral.jpg* -- the multipanel figure of adult corals and larvae: **this is Figure 1**  
+  - "final figures" **folder** has publication formatted figures and tables  
+
+
+**nutrients folder**  -- dissolved inorganic nutrient concentrations
    - *nutrients_nitrogen.csv* -- nitrogen in seawater analyses  
        *columns*  
        *Species* = coral species  
@@ -87,13 +97,5 @@ The goal of this project was to understand how different temperature and nutrien
        *Phosphate..umol.L* = phosphate in umol L-1  
        *N+N..umol.L* = nitrate + nitrite in umol L-1  
       
- **figures folder**   
-    - *combined.daily.survivorship.pdf* -- larvae survivorship for 3 coral species:  **this is Figure 3**  
-    - *combined.resp.pdf* -- larvae respiration for 2 coral species (sans *L. scutaria*)  **this is Figure 4ab**  
-    - *combined.size.pdf* -- change in larvae size for 3 species:  **this is Figure 5**  
-    - *combined.symbiont.counts.pdf* -- symbiont counts for 2 species (sans *L. scutaria*)  **this is Figure 4cd**  
-    - *combined.temp.pdf* -- temperature plot for 3 species:  **this is Figure 2**  
-    - *Fig 1_coral.jpg* -- the multipanel figure of adult corals and larvae: **this is Figure 1**  
-    
 
 

@@ -19,7 +19,7 @@ The goal of this project was to understand how different temperature and nutrien
        *Nutrient.Treatment* = none (prior to exposure), control (no addition), added nitrate (N), phosphate (P) or both (NP)  
        *Date* = date in m/dd/yy  
        *tube.no* = identifier for each tube, 1-40  
-       *tube.rep* = identifier for each larvae in tube, 1-5   
+       *tube.rep* = identifier for each replicate per treatment, 1-5   
        *larvae.no* = arbitrary number for larvae  
        *Area* = planar area in mm2  
          
@@ -33,7 +33,7 @@ The goal of this project was to understand how different temperature and nutrien
        *Final.Survivorship* = proportion of larvae surviving at end of experiment (4 or 5 days)  
          
            
-  - *respiration slopes.csv* -- larvae survivorship   
+  - *respiration slopes.csv* -- larvae respiration rates   
        *Replicate* =  treatment replicate number 1-5  
        *Vial.no* = respiration measurement identifier, used to normalize respiration measurement by background values  
        *larvae.no* = number of larvae in vial  

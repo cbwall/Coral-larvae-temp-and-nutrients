@@ -19,10 +19,11 @@ The goal of this project was to understand how different temperature and nutrien
        *Nutrient.Treatment* = none (prior to exposure), control (no addition), added nitrate (N), phosphate (P) or both (NP)  
        *Date* = date in m/dd/yy  
        *tube.no* = identifier for each tube, 1-40  
-       *tube.rep* = identifier for each larvae in tube, 1-5   
+       *tube.rep* = identifier for each replicate per treatment, 1-5   
        *larvae.no* = arbitrary number for larvae  
        *Area* = planar area in mm2  
-       
+         
+          
   - *larval survivorship.csv* -- larvae survivorship     
        *Species* = 3 species used  
        *Tube* = replicate number  
@@ -30,8 +31,9 @@ The goal of this project was to understand how different temperature and nutrien
        *Day.1*...*Day.5* = survivorship of larvae in tube over days 1-5  
        *Month* = first run (month 1, preliminary data not used in study) and second run (month 2, used in study)  
        *Final.Survivorship* = proportion of larvae surviving at end of experiment (4 or 5 days)  
-       
-  - *respiration slopes.csv* -- larvae survivorship   
+         
+           
+  - *respiration slopes.csv* -- larvae respiration rates   
        *Replicate* =  treatment replicate number 1-5  
        *Vial.no* = respiration measurement identifier, used to normalize respiration measurement by background values  
        *larvae.no* = number of larvae in vial  
@@ -45,7 +47,8 @@ The goal of this project was to understand how different temperature and nutrien
        *umol.h.larvae* = respiration rates further normalized by number of larvae still alive in each vial post respiration trials  
        *nmol.min.larv* = respiration rates per larva converted to nmol per min  
        *nmol.min.larv.cons* = rates multiplied by -1 to convey oxygen consumption rather than generation  
-       
+         
+         
    - *symbiont density.csv* -- symbiont densities  
        *Tube.rep* = replicate tube  
        *no.larvae* = larvae in tube  
@@ -62,8 +65,19 @@ The goal of this project was to understand how different temperature and nutrien
        *Day* = timepoint measured as ‘Reading’ divided by ‘Total_Hours’
        *Reading* = number identifying each temperature measurement across experiment  
        *Total_Hours* = total number of 15 minute intervals in a 24 hour period (96)
-       
-   **nutrients folder**  
+         
+         
+ **figures folder**   
+    - *combined.daily.survivorship.pdf* -- larvae survivorship for 3 coral species:  **this is Figure 3**  
+    - *combined.resp.pdf* -- larvae respiration for 2 coral species (sans *L. scutaria*)  **this is Figure 4ab**  
+    - *combined.size.pdf* -- change in larvae size for 3 species:  **this is Figure 5**  
+    - *combined.symbiont.counts.pdf* -- symbiont counts for 2 species (sans *L. scutaria*)  **this is Figure 4cd**  
+    - *combined.temp.pdf* -- temperature plot for 3 species:  **this is Figure 2**  
+    - *Fig 1_coral.jpg* -- the multipanel figure of adult corals and larvae: **this is Figure 1**  
+  - "final figures" **folder** has publication formatted figures and tables  
+  
+  
+**nutrients folder**  -- dissolved inorganic nutrient concentrations
    - *nutrients_nitrogen.csv* -- nitrogen in seawater analyses  
        *columns*  
        *Species* = coral species  
@@ -87,13 +101,5 @@ The goal of this project was to understand how different temperature and nutrien
        *Phosphate..umol.L* = phosphate in umol L-1  
        *N+N..umol.L* = nitrate + nitrite in umol L-1  
       
- **figures folder**   
-    - *combined.daily.survivorship.pdf* -- larvae survivorship for 3 coral species:  **this is Figure 3**  
-    - *combined.resp.pdf* -- larvae respiration for 2 coral species (sans *L. scutaria*)  **this is Figure 4ab**  
-    - *combined.size.pdf* -- change in larvae size for 3 species:  **this is Figure 5**  
-    - *combined.symbiont.counts.pdf* -- symbiont counts for 2 species (sans *L. scutaria*)  **this is Figure 4cd**  
-    - *combined.temp.pdf* -- temperature plot for 3 species:  **this is Figure 2**  
-    - *Fig 1_coral.jpg* -- the multipanel figure of adult corals and larvae: **this is Figure 1**  
-    
 
 

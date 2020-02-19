@@ -14,8 +14,8 @@ The goal of this project was to understand how different temperature and nutrien
   - *larval size.csv* -- larvae size  
        *columns*
        *Species* = 3 species tested  
-       *Treatment* = initial (day 0 prior to exposure), and Treatment codes for nitrate (N), phosphate (P), ambient (A) and high temp (H) 
-       *Heat.Treatment* = none (prior to exposure), ambient (27C) and heated (29C)  
+       *Treatment* = initial (day 0 prior to exposure), and Treatment codes for nitrate (N), phosphate (P), ambient (A) and high temp (H)   
+       *Heat.Treatment* = none (prior to exposure), ambient (27C) and heated (29C)   
        *Nutrient.Treatment* = none (prior to exposure), control (no addition), added nitrate (N), phosphate (P) or both (NP)  
        *Date* = date in m/dd/yy  
        *tube.no* = identifier for each tube, 1-40  

@@ -27,7 +27,7 @@ library(rcompanion) #has dependencies with DescTools that can lead to loading is
 *Kitchen RM, Piscetta M, Lenz EA, de Souza MR, Schar D, Gates RD, Wall CB. Symbiont transmission and reproductive mode influence responses of three Hawaiian coral larvae to elevated temperature and nutrients. (2020) Coral Reefs*
 
   
-## Synposis  
+## Synopsis  
 Corals are threatened by rising ocean temperatures and increased nutrient loading in coastal areas. The threats posed by elevated temperatures and nutrients for coral larvae -- the early stages of the coral lifecycle -- however are less certain, and the biology of corals in larval stages can differ considerably from that of adults. For instance, some species brood larvae with symbionts inherited from parents, others broadcast spawn egg-sperm bundles that receive endosymbionts from parents, while other egg-sperm bundles are aposymbontic and endosymbionts are obtained from the water column (i.e. horizontal transmittion).  
   
 The goal of this project was to understand how different temperature and nutrient concentrations affect the larvae of three Hawaiian reef coral taxa: *Lobactis scutaria* (broadcast spawner, aposymbiotic larvae), *Pocillopora acuta* (brooder, symbiotic larvae), and *Montipora capitata* (broadcast spawner, symbiotic larvae).  
@@ -45,7 +45,7 @@ The goal of this project was to understand how different temperature and nutrien
 Temperature treatments oscillated with natural diel cycles at means of ca. 27°C and 29°C (*ambient and elevated temperatures*). Nutrient concentrations were elevated nitrate (5 μM NO~3~^-^), elevated phosphate (1μM PO~4~^3-^) and a combined elevated nitrate and phosphate treatment (+N+P). We evaluated effects of treatments after 4 or 5 days of exposure by assessing *(1) larval survivorship, (2) dark despiration rates, (3) symbiont cell densities, and (4) change in larval size.*  
   
   
-## Temperauture treatments  
+## Temperature treatments  
 Temperatures were variable according to natural cycles with *elevated temperature* (~29°C) at 1-2°C offset above ambient (~ 27°C).  
 ```{r temperature, results='hide'}
 #Upload temperature data
@@ -154,7 +154,7 @@ dev.copy(pdf, "figures/combined.temp.pdf", width = 6, height = 8)
 dev.off()
 ```
 
-## Biological Responses    
+## Biological responses    
   
 We measured larvae survivorship, dark respiration, symbiont densities, and change in size over the 4 or 5 day exposure to temperature-nutrient treatments.  
   

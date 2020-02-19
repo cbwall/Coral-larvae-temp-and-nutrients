@@ -11,7 +11,7 @@ The goal of this project was to understand how different temperature and nutrien
 
 ## Treatment and biological data  
  **data folder**  
-     -*larval size.csv* -- larvae size  
+    - larval size.csv -- larvae size  
        *columns*
        *Species* = 3 species tested  
        *Treatment* = initial (day 0 prior to exposure), and Treatment codes for nitrate (N), phosphate (P), ambient (A) and high temp (H) 
@@ -22,7 +22,8 @@ The goal of this project was to understand how different temperature and nutrien
        *tube.rep* = identifier for each larvae in tube, 1-5   
        *larvae.no* = arbitrary number for larvae  
        *Area* = planar area in mm2  
-     -*larval survivorship* -- larvae survivorship     
+       
+    -larval survivorship -- larvae survivorship     
        *Species* = 3 species used  
        *Tube* = replicate number  
        *Day.0* = larvae in each replicate tube for each treatment at start of experiment  

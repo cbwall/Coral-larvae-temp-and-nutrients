@@ -27,7 +27,7 @@ The goal of this project was to understand how different temperature and nutrien
        *Species* = 3 species used  
        *Tube* = replicate number  
        *Day.0* = larvae in each replicate tube for each treatment at start of experiment  
-       *Day.1*...Day.5* = survivorship of larvae in tube over days 1-5  
+       *Day.1*...*Day.5* = survivorship of larvae in tube over days 1-5  
        *Month* = first run (month 1, preliminary data not used in study) and second run (month 2, used in study)  
        *Final.Survivorship* = proportion of larvae surviving at end of experiment (4 or 5 days)  
        
@@ -64,7 +64,7 @@ The goal of this project was to understand how different temperature and nutrien
        *Total_Hours* = total number of 15 minute intervals in a 24 hour period (96)
        
    **nutrients folder**  
-     - *nutrients_nitrogen.csv* -- nitrogen in seawater analyses  
+   - *nutrients_nitrogen.csv* -- nitrogen in seawater analyses  
        *columns*  
        *Species* = coral species  
        *Date* = date of measurement in m/dd/yy  
@@ -76,11 +76,11 @@ The goal of this project was to understand how different temperature and nutrien
        *NO2..umol.L* = nitrite in umol L-1  
        *NO3..umol.L* = nitrate in umol L-1  
        
-   - *nutrients_phosphate.csv* -- phosphate in seawater analyses  
+  - *nutrients_phosphate.csv* -- phosphate in seawater analyses  
        *columns* same as 'nutrients_nitrogen.csv' except...  
        *SRP..umol.L* = soluble reactive phosphate in umol L-1  
        
-   - *SLAB.water.csv* -- nutrients in stock solutions analyzed by SLAB at UH Mānoa  
+  - *SLAB.water.csv* -- nutrients in stock solutions analyzed by SLAB at UH Mānoa  
        *columns*  
        *Total.N..umol.L* = total nitrogen in umol L-1  
        *Total.P..umol.L* = total phosphorous in umol L-1  

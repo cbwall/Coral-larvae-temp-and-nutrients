@@ -11,7 +11,7 @@ The goal of this project was to understand how different temperature and nutrien
 
 ## Treatment and biological data  
  **data folder**  
-  - larval size.csv -- larvae size  
+  - *larval size.csv* -- larvae size  
        *columns*
        *Species* = 3 species tested  
        *Treatment* = initial (day 0 prior to exposure), and Treatment codes for nitrate (N), phosphate (P), ambient (A) and high temp (H) 
@@ -23,7 +23,7 @@ The goal of this project was to understand how different temperature and nutrien
        *larvae.no* = arbitrary number for larvae  
        *Area* = planar area in mm2  
        
-  - larval survivorship -- larvae survivorship     
+  - *larval survivorship.csv* -- larvae survivorship     
        *Species* = 3 species used  
        *Tube* = replicate number  
        *Day.0* = larvae in each replicate tube for each treatment at start of experiment  
@@ -31,7 +31,7 @@ The goal of this project was to understand how different temperature and nutrien
        *Month* = first run (month 1, preliminary data not used in study) and second run (month 2, used in study)  
        *Final.Survivorship* = proportion of larvae surviving at end of experiment (4 or 5 days)  
        
-  -*respiration slopes.csv* -- larvae survivorship   
+  - *respiration slopes.csv* -- larvae survivorship   
        *Replicate* =  treatment replicate number 1-5  
        *Vial.no* = respiration measurement identifier, used to normalize respiration measurement by background values  
        *larvae.no* = number of larvae in vial  
@@ -46,7 +46,7 @@ The goal of this project was to understand how different temperature and nutrien
        *nmol.min.larv* = respiration rates per larva converted to nmol per min  
        *nmol.min.larv.cons* = rates multiplied by -1 to convey oxygen consumption rather than generation  
        
-   -*symbiont density.csv* -- symbiont densities  
+   - *symbiont density.csv* -- symbiont densities  
        *Tube.rep* = replicate tube  
        *no.larvae* = larvae in tube  
        *Initial.vol.ul* = initial volume of liquid in each vial measured in ul  
@@ -57,14 +57,14 @@ The goal of this project was to understand how different temperature and nutrien
        *Total.vial.concentration* = number of algal cells in entire volume of liquid in each vial  
        *Conc.per.larv* = average concentration of algal cells per larva   
        
-   -*temp data.csv* -- temperature data  
+   - *temp data.csv* -- temperature data  
        *Time* = date and time recorded by HOBO logger
        *Day* = timepoint measured as ‘Reading’ divided by ‘Total_Hours’
        *Reading* = number identifying each temperature measurement across experiment  
        *Total_Hours* = total number of 15 minute intervals in a 24 hour period (96)
        
    **nutrients folder**  
-     -*nutrients_nitrogen.csv* -- nitrogen in seawater analyses  
+     - *nutrients_nitrogen.csv* -- nitrogen in seawater analyses  
        *columns*  
        *Species* = coral species  
        *Date* = date of measurement in m/dd/yy  
@@ -76,11 +76,11 @@ The goal of this project was to understand how different temperature and nutrien
        *NO2..umol.L* = nitrite in umol L-1  
        *NO3..umol.L* = nitrate in umol L-1  
        
-   -*nutrients_phosphate.csv* -- phosphate in seawater analyses  
+   - *nutrients_phosphate.csv* -- phosphate in seawater analyses  
        *columns* same as 'nutrients_nitrogen.csv' except...  
        *SRP..umol.L* = soluble reactive phosphate in umol L-1  
        
-   -*SLAB.water.csv* -- nutrients in stock solutions analyzed by SLAB at UH Mānoa  
+   - *SLAB.water.csv* -- nutrients in stock solutions analyzed by SLAB at UH Mānoa  
        *columns*  
        *Total.N..umol.L* = total nitrogen in umol L-1  
        *Total.P..umol.L* = total phosphorous in umol L-1  
@@ -88,12 +88,12 @@ The goal of this project was to understand how different temperature and nutrien
        *N+N..umol.L* = nitrate + nitrite in umol L-1  
       
  **figures folder**   
-    *combined.daily.survivorship.pdf* -- larvae survivorship for 3 coral species:  **this is Figure 3**  
-    *combined.resp.pdf* -- larvae respiration for 2 coral species (sans *L. scutaria*)  **this is Figure 4ab**  
-    *combined.size.pdf* -- change in larvae size for 3 species:  **this is Figure 5**  
-    *combined.symbiont.counts.pdf* -- symbiont counts for 2 species (sans *L. scutaria*)  **this is Figure 4cd**  
-    *combined.temp.pdf* -- temperature plot for 3 species:  **this is Figure 2**  
-    *Fig 1_coral.jpg* -- the multipanel figure of adult corals and larvae: **this is Figure 1**  
+    - *combined.daily.survivorship.pdf* -- larvae survivorship for 3 coral species:  **this is Figure 3**  
+    - *combined.resp.pdf* -- larvae respiration for 2 coral species (sans *L. scutaria*)  **this is Figure 4ab**  
+    - *combined.size.pdf* -- change in larvae size for 3 species:  **this is Figure 5**  
+    - *combined.symbiont.counts.pdf* -- symbiont counts for 2 species (sans *L. scutaria*)  **this is Figure 4cd**  
+    - *combined.temp.pdf* -- temperature plot for 3 species:  **this is Figure 2**  
+    - *Fig 1_coral.jpg* -- the multipanel figure of adult corals and larvae: **this is Figure 1**  
     
 
 

@@ -19,7 +19,7 @@ The goal of this project was to understand how different temperature and nutrien
 
 ## Treatment and biological data  
  **data folder**  
-  - *larval size.csv* -- larvae size  
+  - **larval size.csv** -- larvae size  
        *columns*
        *Species* = 3 species tested  
        *Treatment* = initial (day 0 prior to exposure), and Treatment codes for nitrate (N), phosphate (P), ambient (A) and high temp (H)   
@@ -32,7 +32,7 @@ The goal of this project was to understand how different temperature and nutrien
        *Area* = planar area in mm2  
          
           
-  - *larval survivorship.csv* -- larvae survivorship     
+  - **larval survivorship.csv** -- larvae survivorship     
        *Species* = 3 species used  
        *Tube* = replicate number  
        *Day.0* = larvae in each replicate tube for each treatment at start of experiment  
@@ -41,7 +41,7 @@ The goal of this project was to understand how different temperature and nutrien
        *Final.Survivorship* = proportion of larvae surviving at end of experiment (4 or 5 days)  
          
            
-  - *respiration slopes.csv* -- larvae respiration rates   
+  - **respiration slopes.csv** -- larvae respiration rates   
        *Replicate* =  treatment replicate number 1-5  
        *Vial.no* = respiration measurement identifier, used to normalize respiration measurement by background values  
        *larvae.no* = number of larvae in vial  
@@ -57,7 +57,7 @@ The goal of this project was to understand how different temperature and nutrien
        *nmol.min.larv.cons* = rates multiplied by -1 to convey oxygen consumption rather than generation  
          
          
-   - *symbiont density.csv* -- symbiont densities  
+   - **symbiont density.csv** -- symbiont densities  
        *Tube.rep* = replicate tube  
        *no.larvae* = larvae in tube  
        *Initial.vol.ul* = initial volume of liquid in each vial measured in ul  
@@ -68,7 +68,7 @@ The goal of this project was to understand how different temperature and nutrien
        *Total.vial.concentration* = number of algal cells in entire volume of liquid in each vial  
        *Conc.per.larv* = average concentration of algal cells per larva   
        
-   - *temp data.csv* -- temperature data  
+   - **temp data.csv** -- temperature data  
        *Time* = date and time recorded by HOBO logger
        *Day* = timepoint measured as ‘Reading’ divided by ‘Total_Hours’
        *Reading* = number identifying each temperature measurement across experiment  
@@ -86,7 +86,7 @@ The goal of this project was to understand how different temperature and nutrien
   
   
 **nutrients folder**  -- dissolved inorganic nutrient concentrations
-   - *nutrients_nitrogen.csv* -- nitrogen in seawater analyses  
+   - **nutrients_nitrogen.csv** -- nitrogen in seawater analyses  
        *columns*  
        *Species* = coral species  
        *Date* = date of measurement in m/dd/yy  
@@ -98,11 +98,11 @@ The goal of this project was to understand how different temperature and nutrien
        *NO2..umol.L* = nitrite in umol L-1  
        *NO3..umol.L* = nitrate in umol L-1  
        
-  - *nutrients_phosphate.csv* -- phosphate in seawater analyses  
+  - **nutrients_phosphate.csv** -- phosphate in seawater analyses  
        *columns* same as 'nutrients_nitrogen.csv' except...  
        *SRP..umol.L* = soluble reactive phosphate in umol L-1  
        
-  - *SLAB.water.csv* -- nutrients in stock solutions analyzed by SLAB at UH Mānoa  
+  - **SLAB.water.csv** -- nutrients in stock solutions analyzed by SLAB at UH Mānoa  
        *columns*  
        *Total.N..umol.L* = total nitrogen in umol L-1  
        *Total.P..umol.L* = total phosphorous in umol L-1  

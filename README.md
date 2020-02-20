@@ -9,11 +9,11 @@ The goal of this project was to understand how different temperature and nutrien
   **markdown files**  
     *Coral-larvae-temp-and-nutrients.Rproj* -- the R project, where Rmd file and all scripts executed  
     *Kitchen et al. larvae temp nutr.Rmd* -- the R-markdown file with script-code chunks  
-    *Kitchen-et-al.-larvae-temp-nutr.html*  -- the html output from R markdown  
-      **how to open an html Markdown** -- by popular demand: 
-         (1) easiest-- clone the directory and open file
-         (2) next easiet -- click on the file, download
-             - it loads a jumbled code in browser, right click 'save as', save as html to your device, open in preferred browser (Chrome, etc).
+    *Kitchen-et-al.-larvae-temp-nutr.html*  -- the html output from R markdown   
+        - **how to open an html Markdown** -- by popular demand:  
+         (1) easiest-- clone the directory and open file  
+         (2) next easiet -- click on the file, download  
+             - it loads a jumbled code in browser, right click 'save as', save as html to your device, open in preferred browser (Chrome, etc).  
 
 ## Treatment and biological data  
  **data folder**  
